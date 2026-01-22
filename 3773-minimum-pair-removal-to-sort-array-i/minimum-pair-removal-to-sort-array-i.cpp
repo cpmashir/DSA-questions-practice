@@ -1,7 +1,3 @@
-#include <vector>
-#include <algorithm>
-#include <climits>
-
 class Solution {
 public:
     int minimumPairRemoval(std::vector<int>& nums) {
