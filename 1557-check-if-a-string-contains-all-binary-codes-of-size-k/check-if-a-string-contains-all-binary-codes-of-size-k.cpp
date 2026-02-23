@@ -1,22 +1,27 @@
 class Solution {
 public:
     bool hasAllCodes(string s, int k) {
-        // If the string length is less than the required unique combinations + k - 1, 
-        // it's mathematically impossible to contain all codes.
-        if (s.length() < (1 << k) + k - 1) return false;
+        int n = s.length();
+        int totalRequired = 1 << k;
+        if (n < totalRequired + k - 1) return false;
 
-        unordered_set<string> foundCodes;
-        int totalRequired = 1 << k; // This is 2^k
+        vector<bool> found(totalRequired, false);
+        int count = 0;
+        int currentMask = 0;
+        int allOnes = totalRequired - 1; 
 
-        for (int i = 0; i <= (int)s.length() - k; ++i) {
-            foundCodes.insert(s.substr(i, k));
-            
-            // Optimization: If we found all codes, stop early
-            if (foundCodes.size() == totalRequired) {
-                return true;
+        for (int i = 0; i < n; ++i) {
+            currentMask = ((currentMask << 1) & allOnes) | (s[i] - '0');
+
+            if (i >= k - 1) {
+                if (!found[currentMask]) {
+                    found[currentMask] = true;
+                    count++;
+                    if (count == totalRequired) return true;
+                }
             }
         }
 
-        return foundCodes.size() == totalRequired;
+        return false;
     }
 };
