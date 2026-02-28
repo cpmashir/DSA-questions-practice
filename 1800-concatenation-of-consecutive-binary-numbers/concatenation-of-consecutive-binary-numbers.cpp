@@ -1,21 +1,18 @@
 class Solution {
 public:
     int concatenatedBinary(int n) {
-        long long result = 0;
-        int MOD = 1e9 + 7;
-        int bitLength = 0;
+        long long res = 0;
+        const int MOD = 1e9 + 7;
         
         for (int i = 1; i <= n; ++i) {
-            // If i is a power of 2, the number of bits needed increases
-            if ((i & (i - 1)) == 0) {
-                bitLength++;
-            }
+            // __builtin_clz(i) returns the number of leading zeros in a 32-bit int.
+            // 32 - zeros = position of the highest set bit.
+            int bitLength = 32 - __builtin_clz(i);
             
-            // Shift result left by bitLength and add i
-            // Formula: result = ((result << bitLength) + i) % MOD
-            result = ((result << bitLength) | i) % MOD;
+            // Shifting and ORing is generally faster than addition
+            res = ((res << bitLength) | i) % MOD;
         }
         
-        return (int)result;
+        return (int)res;
     }
 };
