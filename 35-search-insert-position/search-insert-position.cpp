@@ -5,7 +5,6 @@ public:
         int right = nums.size() - 1;
 
         while (left <= right) {
-            // Prevents potential overflow compared to (left + right) / 2
             int mid = left + (right - left) / 2;
 
             if (nums[mid] == target) {
@@ -17,7 +16,6 @@ public:
             }
         }
 
-        // If not found, 'left' is the insertion point
         return left;
     }
 };
