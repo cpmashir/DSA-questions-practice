@@ -1,39 +1,38 @@
 class Solution {
 public:
     vector<int> getBiggestThree(vector<vector<int>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
-        set<int> sums;
+        int m = grid.size(), n = grid[0].size();
+        auto d1 = vector<vector<int>>(m + 1, vector<int>(n + 2, 0));
+        auto d2 = vector<vector<int>>(m + 1, vector<int>(n + 2, 0));
+        set<int> top3;
 
-        for (int r = 0; r < m; ++r) {
-            for (int c = 0; c < n; ++c) {
-                // Every single cell is a rhombus of radius 0
-                sums.insert(grid[r][c]);
-                if (sums.size() > 3) sums.erase(sums.begin());
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                d1[i + 1][j + 1] = grid[i][j] + d1[i][j];
+                d2[i + 1][j + 1] = grid[i][j] + d2[i][j + 2];
+                top3.insert(grid[i][j]);
+                if (top3.size() > 3) top3.erase(top3.begin());
+            }
+        }
 
-                // Try expanding the rhombus radius k
-                for (int k = 1; ; ++k) {
-                    // Check if the 4 corners are within bounds
-                    if (r - k < 0 || r + k >= m || c - k < 0 || c + k >= n) break;
+        for (int k = 1; k <= min(m, n) / 2; ++k) {
+            for (int i = k; i < m - k; ++i) {
+                for (int j = k; j < n - k; ++j) {
+                    int top = i - k, bottom = i + k, left = j - k, right = j + k;
+                    
+                    int side1 = d2[i + 1][left + 1] - d2[top][j + 2]; 
+                    int side2 = d1[bottom + 1][j + 1] - d1[i][left];
+                    int side3 = d2[bottom + 1][j + 1] - d2[i][right + 2];
+                    int side4 = d1[i + 1][right + 1] - d1[top][j];
 
-                    int currentSum = 0;
-                    // Top to Right, Right to Bottom, Bottom to Left, Left to Top
-                    // We sum the segments to form the border
-                    for (int i = 0; i < k; ++i) {
-                        currentSum += grid[r - k + i][c + i]; // Top to Right
-                        currentSum += grid[r + i][c + k - i]; // Right to Bottom
-                        currentSum += grid[r + k - i][c - i]; // Bottom to Left
-                        currentSum += grid[r - i][c - k + i]; // Left to Top
-                    }
-
-                    sums.insert(currentSum);
-                    if (sums.size() > 3) sums.erase(sums.begin());
+                    int total = side1 + side2 + side3 + side4 - grid[top][j] - grid[bottom][j] - grid[i][left] - grid[i][right];
+                    
+                    top3.insert(total);
+                    if (top3.size() > 3) top3.erase(top3.begin());
                 }
             }
         }
 
-        // Convert set to vector and sort descending
-        vector<int> result(sums.rbegin(), sums.rend());
-        return result;
+        return vector<int>(top3.rbegin(), top3.rend());
     }
 };
