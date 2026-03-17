@@ -4,22 +4,29 @@ public:
         int m = matrix.size();
         int n = matrix[0].size();
         int maxArea = 0;
+        
+        // Use a single vector to store current heights to save memory
+        vector<int> heights(n, 0);
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                // Step 1: Update heights based on the row above
-                if (matrix[i][j] != 0 && i > 0) {
-                    matrix[i][j] += matrix[i-1][j];
+                // Update heights: if 1, increment; if 0, reset
+                if (matrix[i][j] == 1) {
+                    heights[j]++;
+                } else {
+                    heights[j] = 0;
                 }
             }
 
-            // Step 2: Create a copy of the current row and sort it descending
-            vector<int> currRow = matrix[i];
-            sort(currRow.begin(), currRow.end(), greater<int>());
+            // Copy heights to a temporary vector for sorting
+            // Sorting is O(N log N), which is fine since N is the width
+            vector<int> sortedHeights = heights;
+            sort(sortedHeights.begin(), sortedHeights.end(), greater<int>());
 
-            // Step 3: Calculate potential area for each width
+            // Calculate max area for this row
             for (int k = 0; k < n; k++) {
-                maxArea = max(maxArea, currRow[k] * (k + 1));
+                if (sortedHeights[k] == 0) break; // Optimization: no more 1s
+                maxArea = max(maxArea, sortedHeights[k] * (k + 1));
             }
         }
 
