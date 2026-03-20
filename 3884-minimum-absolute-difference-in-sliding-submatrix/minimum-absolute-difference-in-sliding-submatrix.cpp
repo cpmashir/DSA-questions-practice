@@ -1,7 +1,7 @@
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <climits>
-#include <set>
 
 using namespace std;
 
@@ -10,43 +10,44 @@ public:
     vector<vector<int>> minAbsDiff(vector<vector<int>>& grid, int k) {
         int m = grid.size();
         int n = grid[0].size();
-        
         int resRows = m - k + 1;
         int resCols = n - k + 1;
         vector<vector<int>> ans(resRows, vector<int>(resCols));
 
         for (int i = 0; i < resRows; ++i) {
             for (int j = 0; j < resCols; ++j) {
-                vector<int> elements;
-                
-                // Collect elements
+                // Use a set to keep elements sorted and handle "distinct" naturally
+                // std::set automatically handles duplicates (we only store unique values)
+                set<int> distinctElements;
                 for (int r = i; r < i + k; ++r) {
                     for (int c = j; c < j + k; ++c) {
-                        elements.push_back(grid[r][c]);
+                        distinctElements.insert(grid[r][c]);
                     }
                 }
 
-                // Sort and remove duplicates to only consider "distinct values"
-                sort(elements.begin(), elements.end());
-                elements.erase(unique(elements.begin(), elements.end()), elements.end());
-
-                // If there are fewer than 2 distinct values, the answer is 0
-                if (elements.size() < 2) {
+                if (distinctElements.size() < 2) {
                     ans[i][j] = 0;
                     continue;
                 }
 
                 int minVal = INT_MAX;
-                for (int x = 0; x < (int)elements.size() - 1; ++x) {
-                    int diff = elements[x + 1] - elements[x];
+                auto it = distinctElements.begin();
+                int prev = *it;
+                ++it;
+
+                // Single pass through the sorted set
+                for (; it != distinctElements.end(); ++it) {
+                    int current = *it;
+                    int diff = current - prev;
                     if (diff < minVal) {
                         minVal = diff;
+                        if (minVal == 1) break; // Optimization: can't get smaller than 1 for distinct ints
                     }
+                    prev = current;
                 }
                 ans[i][j] = minVal;
             }
         }
-
         return ans;
     }
 };
