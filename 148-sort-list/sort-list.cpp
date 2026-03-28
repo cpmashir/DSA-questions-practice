@@ -13,47 +13,35 @@ public:
     ListNode* sortList(ListNode* head) {
         if (!head || !head->next) return head;
 
-        // Count the length of the linked list
         int length = 0;
-        ListNode* curr = head;
-        while (curr) {
-            length++;
-            curr = curr->next;
-        }
+        for (ListNode* curr = head; curr; curr = curr->next) length++;
 
         ListNode dummy(0);
         dummy.next = head;
 
-        // Bottom-up merge sort: step doubles each iteration (1, 2, 4, 8...)
-        for (int step = 1; step < length; step <<= 1) {
+        for (int size = 1; size < length; size <<= 1) {
             ListNode* prev = &dummy;
-            curr = dummy.next;
+            ListNode* curr = dummy.next;
 
             while (curr) {
                 ListNode* left = curr;
-                ListNode* right = split(left, step);
-                curr = split(right, step); // Next starting point for the next pair
+                ListNode* right = split(left, size);
+                curr = split(right, size);
                 prev = merge(left, right, prev);
             }
         }
-
         return dummy.next;
     }
 
 private:
-    // Splits the list into two parts: first 'n' nodes and the rest.
-    // Returns the head of the second part.
     ListNode* split(ListNode* head, int n) {
         for (int i = 1; head && i < n; i++) head = head->next;
-        
         if (!head) return nullptr;
-        ListNode* second = head->next;
-        head->next = nullptr; // Cut the connection
-        return second;
+        ListNode* rest = head->next;
+        head->next = nullptr;
+        return rest;
     }
 
-    // Merges two sorted lists and attaches the result to 'prev'.
-    // Returns the tail of the merged list.
     ListNode* merge(ListNode* l1, ListNode* l2, ListNode* prev) {
         ListNode* curr = prev;
         while (l1 && l2) {
@@ -67,7 +55,7 @@ private:
             curr = curr->next;
         }
         curr->next = l1 ? l1 : l2;
-        while (curr->next) curr = curr->next; // Move to the end of the merged list
+        while (curr->next) curr = curr->next;
         return curr;
     }
 };
