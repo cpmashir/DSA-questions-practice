@@ -1,25 +1,21 @@
 class Solution {
 public:
     string convert(string s, int numRows) {
-        if (numRows <= 1 || s.length() <= numRows) return s;
-
-        vector<string> rows(numRows);
-        int currRow = 0;
-        int step = 1;
-
-        for (char c : s) {
-            rows[currRow] += c;
-            if (currRow == 0) step = 1;
-            else if (currRow == numRows - 1) step = -1;
-            currRow += step;
-        }
+        int n = s.length();
+        if (numRows <= 1 || n <= numRows) return s;
 
         string result;
-        result.reserve(s.length()); 
-        for (const string& row : rows) {
-            result += row;
-        }
+        result.reserve(n);
+        int cycleLen = 2 * numRows - 2;
 
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j + i < n; j += cycleLen) {
+                result += s[j + i];
+                if (i != 0 && i != numRows - 1 && j + cycleLen - i < n) {
+                    result += s[j + cycleLen - i];
+                }
+            }
+        }
         return result;
     }
 };
