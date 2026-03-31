@@ -1,31 +1,22 @@
 class Solution {
 public:
     string convert(string s, int numRows) {
-        // If only 1 row is requested, or the string is too short to zigzag
-        if (numRows == 1 || s.length() <= numRows) {
-            return s;
-        }
+        if (numRows <= 1 || s.length() <= numRows) return s;
 
-        // Create a vector of strings to represent each row
-        vector<string> rows(min(numRows, (int)s.length()));
-        int currentRow = 0;
-        bool goingDown = false;
+        vector<string> rows(numRows);
+        int currRow = 0;
+        int step = 1;
 
         for (char c : s) {
-            rows[currentRow] += c;
-            
-            // If we are at the top or bottom row, change direction
-            if (currentRow == 0 || currentRow == numRows - 1) {
-                goingDown = !goingDown;
-            }
-            
-            // Move up or down based on direction
-            currentRow += goingDown ? 1 : -1;
+            rows[currRow] += c;
+            if (currRow == 0) step = 1;
+            else if (currRow == numRows - 1) step = -1;
+            currRow += step;
         }
 
-        // Concatenate all rows into a single string
-        string result = "";
-        for (string row : rows) {
+        string result;
+        result.reserve(s.length()); 
+        for (const string& row : rows) {
             result += row;
         }
 
