@@ -8,49 +8,43 @@ public:
     int maximumAmount(vector<vector<int>>& coins) {
         int m = coins.size();
         int n = coins[0].size();
+        long long INF = 1e16;
         
-        // dp[i][j][k] represents max coins at (i, j) with k neutralizations used
-        // Initialize with a very small number to represent unreached states
-        long long INF = 1e15;
-        vector<vector<vector<long long>>> dp(m, vector<vector<long long>>(n, vector<long long>(3, -INF)));
-
-        // Base case: Starting point (0,0)
-        dp[0][0][0] = coins[0][0]; // Don't neutralize (0,0)
-        dp[0][0][1] = max(0, coins[0][0]); // Neutralize (0,0) if it's negative
-        dp[0][0][2] = max(0, coins[0][0]); // Neutralize (0,0) (wasteful to use 2, but valid)
+        vector<vector<long long>> prev(n, vector<long long>(3, -INF));
 
         for (int i = 0; i < m; ++i) {
+            vector<vector<long long>> curr(n, vector<long long>(3, -INF));
             for (int j = 0; j < n; ++j) {
-                if (i == 0 && j == 0) continue;
-
                 for (int k = 0; k < 3; ++k) {
-                    long long prev_max = -INF;
-                    
-                    // Coming from Up or Left
-                    if (i > 0) prev_max = max(prev_max, dp[i - 1][j][k]);
-                    if (j > 0) prev_max = max(prev_max, dp[i][j - 1][k]);
-
-                    // Case 1: Don't neutralize current cell (i, j)
-                    if (prev_max != -INF) {
-                        dp[i][j][k] = max(dp[i][j][k], prev_max + coins[i][j]);
+                    if (i == 0 && j == 0) {
+                        curr[0][0] = coins[0][0];
+                        curr[0][1] = max(0, coins[0][0]);
+                        curr[0][2] = max(0, coins[0][0]);
+                        break;
                     }
 
-                    // Case 2: Use a neutralization on current cell (i, j)
+                    long long best_prev = -INF;
+                    if (i > 0) best_prev = max(best_prev, prev[j][k]);
+                    if (j > 0) best_prev = max(best_prev, curr[j - 1][k]);
+
+                    if (best_prev != -INF) {
+                        curr[j][k] = max(curr[j][k], best_prev + coins[i][j]);
+                    }
+
                     if (k > 0) {
-                        long long prev_k_minus_1 = -INF;
-                        if (i > 0) prev_k_minus_1 = max(prev_k_minus_1, dp[i - 1][j][k - 1]);
-                        if (j > 0) prev_k_minus_1 = max(prev_k_minus_1, dp[i][j - 1][k - 1]);
+                        long long best_prev_k = -INF;
+                        if (i > 0) best_prev_k = max(best_prev_k, prev[j][k - 1]);
+                        if (j > 0) best_prev_k = max(best_prev_k, curr[j - 1][k - 1]);
                         
-                        if (prev_k_minus_1 != -INF) {
-                            // If we neutralize a negative cell, treat it as 0
-                            dp[i][j][k] = max(dp[i][j][k], prev_k_minus_1 + max(0, coins[i][j]));
+                        if (best_prev_k != -INF) {
+                            curr[j][k] = max(curr[j][k], best_prev_k + max(0, coins[i][j]));
                         }
                     }
                 }
             }
+            prev = move(curr);
         }
 
-        // The answer is the maximum coins at the bottom-right using 0, 1, or 2 neutralizations
-        return max({dp[m - 1][n - 1][0], dp[m - 1][n - 1][1], dp[m - 1][n - 1][2]});
+        return max({prev[n - 1][0], prev[n - 1][1], prev[n - 1][2]});
     }
 };
