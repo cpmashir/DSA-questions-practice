@@ -11,7 +11,6 @@
 class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
-        // If the list is empty or has only one node, no swaps are possible
         if (!head || !head->next) {
             return head;
         }
@@ -21,21 +20,18 @@ public:
         ListNode* prev = dummy;
 
         while (prev->next && prev->next->next) {
-            // Nodes to be swapped
             ListNode* first = prev->next;
             ListNode* second = prev->next->next;
 
-            // Swapping logic
             first->next = second->next;
             second->next = first;
             prev->next = second;
 
-            // Move prev pointer forward for the next pair
             prev = first;
         }
 
         ListNode* newHead = dummy->next;
-        delete dummy; // Clean up memory
+        delete dummy;
         return newHead;
     }
 };
