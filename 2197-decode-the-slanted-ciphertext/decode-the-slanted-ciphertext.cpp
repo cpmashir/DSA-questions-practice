@@ -2,18 +2,25 @@ class Solution {
 public:
     string decodeCiphertext(string encodedText, int rows) {
         int n = encodedText.length();
+        if (n == 0) return "";
+        
         int cols = n / rows;
         string res;
-        res.reserve(n);
+        res.reserve(n); 
 
         for (int i = 0; i < cols; ++i) {
-            for (int curr = i; curr < n; curr += cols + 1) {
-                res += encodedText[curr];
-                if ((curr - i) / (cols + 1) == rows - 1) break;
+            for (int j = i; j < n; j += cols + 1) {
+                res += encodedText[j];
+                if (res.length() % rows == 0 && i + (rows - 1) * (cols + 1) == j) break;
             }
         }
 
-        int last = res.find_last_not_of(' ');
-        return (last == string::npos) ? "" : res.substr(0, last + 1);
+        int last = res.size() - 1;
+        while (last >= 0 && res[last] == ' ') {
+            last--;
+        }
+        
+        res.resize(last + 1);
+        return res;
     }
 };
