@@ -16,6 +16,7 @@ public:
             }
         }
 
-        return x == 0 && y == 0;
+        // The robot is at the origin if both net displacements are zero
+        return (x == 0 && y == 0);
     }
 };
