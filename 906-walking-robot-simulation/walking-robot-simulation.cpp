@@ -1,49 +1,36 @@
 class Solution {
 public:
     int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        int dx[] = {0, 1, 0, -1};
+        int dy[] = {1, 0, -1, 0};
         
-        unordered_set<long long> obs;
-        
-        for (auto &o : obstacles) {
-            long long key = (long long)o[0] * 60001 + o[1];
-            obs.insert(key);
+        unordered_set<long long> obstacleSet;
+        for (const auto& obs : obstacles) {
+            obstacleSet.insert(((long long)obs[0] + 30000) << 32 | ((long long)obs[1] + 30000));
         }
         
-        int x = 0, y = 0;
-        int dir = 0;
-        
-        vector<int> dx = {0,1,0,-1};
-        vector<int> dy = {1,0,-1,0};
-        
-        int maxDist = 0;
+        int x = 0, y = 0, dir = 0, maxDistSq = 0;
         
         for (int cmd : commands) {
-            
-            if (cmd == -1) { 
+            if (cmd == -1) {
                 dir = (dir + 1) % 4;
-            }
-            else if (cmd == -2) { 
+            } else if (cmd == -2) {
                 dir = (dir + 3) % 4;
-            }
-            else {
-                for (int i = 0; i < cmd; i++) {
-                    
+            } else {
+                for (int i = 0; i < cmd; ++i) {
                     int nx = x + dx[dir];
                     int ny = y + dy[dir];
-                    
-                    long long key = (long long)nx * 60001 + ny;
-                    
-                    if (obs.count(key))
+                    if (obstacleSet.find(((long long)nx + 30000) << 32 | ((long long)ny + 30000)) == obstacleSet.end()) {
+                        x = nx;
+                        y = ny;
+                        maxDistSq = max(maxDistSq, x * x + y * y);
+                    } else {
                         break;
-                    
-                    x = nx;
-                    y = ny;
-                    
-                    maxDist = max(maxDist, x*x + y*y);
+                    }
                 }
             }
         }
         
-        return maxDist;
+        return maxDistSq;
     }
 };
