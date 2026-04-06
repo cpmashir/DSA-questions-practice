@@ -1,56 +1,49 @@
-#include <vector>
-#include <unordered_set>
-#include <algorithm>
-#include <string>
-
-using namespace std;
-
 class Solution {
 public:
     int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
-        // Directions: North, East, South, West
-        // dy/dx changes for each direction index
-        int dx[] = {0, 1, 0, -1};
-        int dy[] = {1, 0, -1, 0};
         
-        // Store obstacles in a set for O(1) lookup
-        // We use a custom hash or string to represent the coordinates
-        unordered_set<string> obstacleSet;
-        for (const auto& obs : obstacles) {
-            obstacleSet.insert(to_string(obs[0]) + "," + to_string(obs[1]));
+        unordered_set<long long> obs;
+        
+        for (auto &o : obstacles) {
+            long long key = (long long)o[0] * 60001 + o[1];
+            obs.insert(key);
         }
         
-        int x = 0, y = 0;    // Starting position
-        int dir = 0;         // Initially facing North
-        int maxDistSq = 0;
+        int x = 0, y = 0;
+        int dir = 0;
+        
+        vector<int> dx = {0,1,0,-1};
+        vector<int> dy = {1,0,-1,0};
+        
+        int maxDist = 0;
         
         for (int cmd : commands) {
-            if (cmd == -1) {
-                // Turn right
+            
+            if (cmd == -1) { 
                 dir = (dir + 1) % 4;
-            } else if (cmd == -2) {
-                // Turn left
+            }
+            else if (cmd == -2) { 
                 dir = (dir + 3) % 4;
-            } else {
-                // Move forward 'cmd' units
-                for (int i = 0; i < cmd; ++i) {
-                    int nextX = x + dx[dir];
-                    int nextY = y + dy[dir];
+            }
+            else {
+                for (int i = 0; i < cmd; i++) {
                     
-                    // Check if the next step is an obstacle
-                    if (obstacleSet.find(to_string(nextX) + "," + to_string(nextY)) == obstacleSet.end()) {
-                        x = nextX;
-                        y = nextY;
-                        // Update maximum distance squared
-                        maxDistSq = max(maxDistSq, x * x + y * y);
-                    } else {
-                        // Hit an obstacle, stop moving for this command
+                    int nx = x + dx[dir];
+                    int ny = y + dy[dir];
+                    
+                    long long key = (long long)nx * 60001 + ny;
+                    
+                    if (obs.count(key))
                         break;
-                    }
+                    
+                    x = nx;
+                    y = ny;
+                    
+                    maxDist = max(maxDist, x*x + y*y);
                 }
             }
         }
         
-        return maxDistSq;
+        return maxDist;
     }
 };
