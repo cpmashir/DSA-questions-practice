@@ -1,44 +1,33 @@
 class Robot {
 private:
-    int w, h, perimeter;
+    int w, h, p;
     int pos = 0;
-    bool moved = false;
+    bool is_origin = true;
 
 public:
-    Robot(int width, int height) {
-        w = width;
-        h = height;
-        // Total steps to complete one full lap
-        perimeter = 2 * (w - 1) + 2 * (h - 1);
+    Robot(int width, int height) : w(width), h(height) {
+        p = (w + h - 2) << 1;
     }
     
     void step(int num) {
-        moved = true;
-        pos = (pos + num) % perimeter;
-        // If the robot completes a full lap and ends at 0, 
-        // it technically faces "South" at the origin.
-        if (pos == 0) pos = perimeter; 
+        is_origin = false;
+        pos = (pos + num) % p;
     }
     
     vector<int> getPos() {
-        // Map the linear 'pos' back to X, Y coordinates
-        // Using a temporary variable to handle the "pos = perimeter" logic
-        int curr = pos % perimeter; 
-        
-        if (curr < w) return {curr, 0};                   // Bottom edge
-        if (curr < w + h - 1) return {w - 1, curr - (w - 1)}; // Right edge
-        if (curr < 2 * w + h - 2) return {w - 1 - (curr - (w + h - 2)), h - 1}; // Top edge
-        return {0, h - 1 - (curr - (2 * w + h - 3))};    // Left edge
+        if (pos < w) return {pos, 0};
+        if (pos < w + h - 1) return {w - 1, pos - w + 1};
+        if (pos < 2 * w + h - 2) return {w - 1 - (pos - (w + h - 2)), h - 1};
+        return {0, h - 1 - (pos - (2 * w + h - 3))};
     }
     
     string getDir() {
-        if (!moved || (pos > 0 && pos < w)) return "East";
+        if (is_origin || (pos > 0 && pos < w)) return "East";
         if (pos >= w && pos < w + h - 1) return "North";
         if (pos >= w + h - 1 && pos < 2 * w + h - 2) return "West";
         return "South";
     }
 };
-
 /**
  * Your Robot object will be instantiated and called as such:
  * Robot* obj = new Robot(width, height);
