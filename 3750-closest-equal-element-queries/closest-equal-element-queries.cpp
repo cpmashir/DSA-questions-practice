@@ -1,55 +1,34 @@
-#include <vector>
-#include <unordered_map>
-#include <algorithm>
-#include <cmath>
-
-using namespace std;
-
 class Solution {
 public:
     vector<int> solveQueries(vector<int>& nums, vector<int>& queries) {
         int n = nums.size();
         unordered_map<int, vector<int>> pos_map;
         
-        // Step 1: Map each value to its list of indices
         for (int i = 0; i < n; ++i) {
             pos_map[nums[i]].push_back(i);
         }
         
-        // Step 2: Precompute the minimum distance for every index that has duplicates
-        // We use an unordered_map to store the precomputed result for each index
-        unordered_map<int, int> min_dist_memo;
+        vector<int> min_dist_memo(n, -1);
         
-        for (auto& entry : pos_map) {
-            const vector<int>& indices = entry.second;
+        for (auto& [val, indices] : pos_map) {
             int m = indices.size();
-            
-            if (m <= 1) {
-                // If the value appears only once, distance is -1
-                for (int idx : indices) min_dist_memo[idx] = -1;
-                continue;
-            }
+            if (m < 2) continue;
             
             for (int k = 0; k < m; ++k) {
-                int curr_idx = indices[k];
+                int curr = indices[k];
                 
-                // Neighbors in the sorted list (with wrap-around)
-                int prev_idx = indices[(k - 1 + m) % m];
                 int next_idx = indices[(k + 1) % m];
-                
-                // Calculate circular distance to previous neighbor
-                int dist1 = abs(curr_idx - prev_idx);
-                dist1 = min(dist1, n - dist1);
-                
-                // Calculate circular distance to next neighbor
-                int dist2 = abs(curr_idx - next_idx);
-                dist2 = min(dist2, n - dist2);
-                
-                min_dist_memo[curr_idx] = min(dist1, dist2);
+                int d_next = abs(curr - next_idx);
+                d_next = min(d_next, n - d_next);
+
+                int prev_idx = indices[(k - 1 + m) % m];
+                int d_prev = abs(curr - prev_idx);
+                d_prev = min(d_prev, n - d_prev);
+
+                min_dist_memo[curr] = min(d_next, d_prev);
             }
         }
         
-        // Step 3: Fill the answer array based on queries
         vector<int> answer;
         answer.reserve(queries.size());
         for (int q : queries) {
