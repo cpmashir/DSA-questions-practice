@@ -1,27 +1,29 @@
 class Solution {
 public:
-    int reverseInt(int n) {
-        long rev = 0;
-        while (n > 0) {
-            rev = rev * 10 + (n % 10);
-            n /= 10;
-        }
-        return (int)rev;
-    }
-
     int minMirrorPairDistance(vector<int>& nums) {
         unordered_map<int, int> lastSeenReversed;
-        int minDistance = INT_MAX;
-        bool found = false;
+        lastSeenReversed.reserve(nums.size()); 
+        int minDistance = -1;
 
         for (int j = 0; j < nums.size(); ++j) {
-            if (lastSeenReversed.count(nums[j])) {
-                minDistance = min(minDistance, j - lastSeenReversed[nums[j]]);
-                found = true;
+            auto it = lastSeenReversed.find(nums[j]);
+            if (it != lastSeenReversed.end()) {
+                int dist = j - it->second;
+                if (minDistance == -1 || dist < minDistance) {
+                    minDistance = dist;
+                    if (minDistance == 1) return 1; 
+                }
             }
-            lastSeenReversed[reverseInt(nums[j])] = j;
+
+            int n = nums[j];
+            long rev = 0;
+            while (n > 0) {
+                rev = rev * 10 + (n % 10);
+                n /= 10;
+            }
+            lastSeenReversed[(int)rev] = j;
         }
 
-        return found ? minDistance : -1;
+        return minDistance;
     }
 };
