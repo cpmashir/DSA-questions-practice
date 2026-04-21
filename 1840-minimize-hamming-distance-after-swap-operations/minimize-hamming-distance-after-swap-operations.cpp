@@ -1,7 +1,3 @@
-#include <vector>
-#include <unordered_map>
-#include <numeric>
-
 class Solution {
     struct DSU {
         std::vector<int> parent;
@@ -29,7 +25,6 @@ public:
             dsu.unite(swap[0], swap[1]);
         }
 
-        // Group indices by their root parent
         std::unordered_map<int, std::unordered_map<int, int>> components;
         for (int i = 0; i < n; ++i) {
             components[dsu.find(i)][source[i]]++;
@@ -38,8 +33,7 @@ public:
         int hamming_distance = 0;
         for (int i = 0; i < n; ++i) {
             int root = dsu.find(i);
-            // If the target value exists in this component's source values
-            if (components[root][target[i]] > 0) {
+            if (components[root].count(target[i]) && components[root][target[i]] > 0) {
                 components[root][target[i]]--;
             } else {
                 hamming_distance++;
