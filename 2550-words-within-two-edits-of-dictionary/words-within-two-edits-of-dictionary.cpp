@@ -12,7 +12,6 @@ public:
                     if (q[i] != d[i]) {
                         edits++;
                     }
-                    // Optimization: if edits exceed 2, this dictionary word fails
                     if (edits > 2) {
                         possible = false;
                         break;
@@ -21,7 +20,6 @@ public:
                 
                 if (possible) {
                     result.push_back(q);
-                    // Found a match for this query, no need to check other dictionary words
                     break;
                 }
             }
