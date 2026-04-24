@@ -6,23 +6,22 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        if (intervals.empty()) return {};
+        int n = intervals.size();
+        if (n <= 1) return intervals;
 
         sort(intervals.begin(), intervals.end());
 
-        vector<vector<int>> merged;
-        merged.push_back(intervals[0]);
-
-        for (int i = 1; i < intervals.size(); i++) {
-            vector<int>& lastMerged = merged.back();
-
-            if (intervals[i][0] <= lastMerged[1]) {
-                lastMerged[1] = max(lastMerged[1], intervals[i][1]);
+        int count = 0;
+        for (int i = 1; i < n; i++) {
+            if (intervals[i][0] <= intervals[count][1]) {
+                intervals[count][1] = max(intervals[count][1], intervals[i][1]);
             } else {
-                merged.push_back(intervals[i]);
+                count++;
+                intervals[count] = intervals[i];
             }
         }
-
-        return merged;
+        
+        intervals.erase(intervals.begin() + count + 1, intervals.end());
+        return intervals;
     }
 };
