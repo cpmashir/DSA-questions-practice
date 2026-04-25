@@ -4,39 +4,36 @@ public:
         vector<vector<int>> result;
         int n = nums.size();
         
-        // Step 1: Sort the array to use two pointers and handle duplicates
+        // 1. Sort the array
         sort(nums.begin(), nums.end());
-
-        for (int i = 0; i < n; ++i) {
-            // Skip duplicates for the first element
+        
+        for (int i = 0; i < n - 2; ++i) {
+            // Skip duplicate values for the first element
             if (i > 0 && nums[i] == nums[i - 1]) continue;
-
-            int low = i + 1;
-            int high = n - 1;
-
-            while (low < high) {
-                int sum = nums[i] + nums[low] + nums[high];
-
+            
+            int left = i + 1;
+            int right = n - 1;
+            
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                
                 if (sum == 0) {
-                    result.push_back({nums[i], nums[low], nums[high]});
+                    result.push_back({nums[i], nums[left], nums[right]});
                     
                     // Skip duplicates for the second and third elements
-                    while (low < high && nums[low] == nums[low + 1]) low++;
-                    while (low < high && nums[high] == nums[high - 1]) high--;
+                    while (left < right && nums[left] == nums[left + 1]) left++;
+                    while (left < right && nums[right] == nums[right - 1]) right--;
                     
-                    low++;
-                    high--;
-                } 
-                else if (sum < 0) {
-                    // Sum is too small, move low pointer to the right
-                    low++;
-                } 
-                else {
-                    // Sum is too large, move high pointer to the left
-                    high--;
+                    left++;
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    right--;
                 }
             }
         }
+        
         return result;
     }
 };
