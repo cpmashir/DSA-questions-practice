@@ -2,8 +2,6 @@ class Solution {
 public:
     bool hasValidPath(vector<vector<int>>& grid) {
         int m = grid.size(), n = grid[0].size();
-        
-        // Bitmask for directions: Up(1), Right(2), Down(4), Left(8)
         int masks[7] = {0, 10, 5, 12, 6, 9, 3};
         int dx[4] = {-1, 0, 1, 0};
         int dy[4] = {0, 1, 0, -1};
