@@ -1,35 +1,28 @@
 class Solution {
 public:
     int minOperations(vector<vector<int>>& grid, int x) {
-        int m = grid.size();
-        int n = grid[0].size();
+        int m = grid.size(), n = grid[0].size();
+        int totalElements = m * n;
         vector<int> nums;
-        
-        // 1. Flatten the grid into a 1D vector
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                nums.push_back(grid[i][j]);
+        nums.reserve(totalElements);
+
+        int remainder = grid[0][0] % x;
+        for (const auto& row : grid) {
+            for (int val : row) {
+                if (val % x != remainder) return -1;
+                nums.push_back(val);
             }
         }
-        
-        // 2. Check if it's possible: all elements must have same remainder mod x
-        int remainder = nums[0] % x;
-        for (int val : nums) {
-            if (val % x != remainder) {
-                return -1;
-            }
-        }
-        
-        // 3. Sort to find the median
-        sort(nums.begin(), nums.end());
-        int median = nums[nums.size() / 2];
-        
-        // 4. Calculate total operations to reach the median
+
+        auto median_it = nums.begin() + totalElements / 2;
+        nth_element(nums.begin(), median_it, nums.end());
+        int median = *median_it;
+
         int totalOps = 0;
         for (int val : nums) {
             totalOps += abs(val - median) / x;
         }
-        
+
         return totalOps;
     }
 };
