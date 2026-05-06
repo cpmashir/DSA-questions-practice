@@ -1,32 +1,28 @@
 class Solution {
 public:
-    vector<vector<char>> rotateTheBox(vector<vector<char>>& boxGrid) {
-        ios_base::sync_with_stdio(false);
-        cin.tie(NULL);
-
-        int m = boxGrid.size();
-        int n = boxGrid[0].size();
+    vector<vector<char>> rotateTheBox(vector<vector<char>>& box) {
+        int m = box.size();
+        int n = box[0].size();
+        
+        // Pre-allocate the rotated dimensions: n rows, m columns
+        vector<vector<char>> res(n, vector<char>(m, '.'));
 
         for (int i = 0; i < m; ++i) {
-            int emptySlot = n - 1;
+            int lowestEmpty = n - 1;
             for (int j = n - 1; j >= 0; --j) {
-                if (boxGrid[i][j] == '*') {
-                    emptySlot = j - 1;
-                } else if (boxGrid[i][j] == '#') {
-                    boxGrid[i][j] = '.';
-                    boxGrid[i][emptySlot] = '#';
-                    emptySlot--;
+                if (box[i][j] == '#') {
+                    // Place the stone at the lowest available spot in the NEW orientation
+                    // Original (i, j) after 90 deg rotation becomes (j, m - 1 - i)
+                    res[lowestEmpty][m - 1 - i] = '#';
+                    lowestEmpty--;
+                } else if (box[i][j] == '*') {
+                    // Obstacles don't move, place it exactly where it belongs
+                    res[j][m - 1 - i] = '*';
+                    lowestEmpty = j - 1;
                 }
             }
         }
-
-        vector<vector<char>> rotatedBox(n, vector<char>(m));
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                rotatedBox[j][m - 1 - i] = boxGrid[i][j];
-            }
-        }
-
-        return rotatedBox;
+        
+        return res;
     }
 };
