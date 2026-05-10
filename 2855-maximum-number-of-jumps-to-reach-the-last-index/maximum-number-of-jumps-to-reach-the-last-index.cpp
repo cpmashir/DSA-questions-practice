@@ -3,7 +3,7 @@
 
 using namespace std;
 
-static const int fast_io = []() {
+static const int _ = []() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     return 0;
@@ -14,24 +14,26 @@ public:
     int maximumJumps(vector<int>& nums, int target) {
         int n = nums.size();
         int dp[1000];
-        for (int i = 0; i < n; ++i) dp[i] = -1;
+        fill(dp, dp + n, -1);
         dp[0] = 0;
 
-        const int* ptr = nums.data();
-        const long long t = target;
+        const int* data = nums.data();
 
         for (int j = 1; j < n; ++j) {
-            const int val_j = ptr[j];
-            int best = -1;
+            int target_val = data[j];
+            int max_j = -1;
+            
             for (int i = 0; i < j; ++i) {
                 if (dp[i] != -1) {
-                    long long diff = (long long)val_j - ptr[i];
-                    if (diff >= -t && diff <= t) {
-                        if (dp[i] + 1 > best) best = dp[i] + 1;
+                    long long diff = (long long)target_val - data[i];
+                    if (diff >= -target && diff <= target) {
+                        if (dp[i] + 1 > max_j) {
+                            max_j = dp[i] + 1;
+                        }
                     }
                 }
             }
-            dp[j] = best;
+            dp[j] = max_j;
         }
         return dp[n - 1];
     }
