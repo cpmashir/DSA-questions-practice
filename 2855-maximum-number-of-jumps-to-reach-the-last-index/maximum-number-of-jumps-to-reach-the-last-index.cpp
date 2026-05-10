@@ -1,8 +1,13 @@
 #include <vector>
 #include <algorithm>
-#include <cmath>
 
 using namespace std;
+
+static const int fast_io = []() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    return 0;
+}();
 
 class Solution {
 public:
@@ -12,9 +17,15 @@ public:
         dp[0] = 0;
 
         for (int j = 1; j < n; ++j) {
+            int current_val = nums[j];
             for (int i = 0; i < j; ++i) {
-                if (dp[i] != -1 && abs((long long)nums[j] - nums[i]) <= target) {
-                    dp[j] = max(dp[j], dp[i] + 1);
+                if (dp[i] != -1) {
+                    long long diff = (long long)current_val - nums[i];
+                    if (diff >= -target && diff <= target) {
+                        if (dp[i] + 1 > dp[j]) {
+                            dp[j] = dp[i] + 1;
+                        }
+                    }
                 }
             }
         }
