@@ -1,18 +1,17 @@
-static const int fast_io = []() {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
+static const int _ = []() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
     return 0;
 }();
 
-int diff[200002];
-
 class Solution {
+    static int diff[200005]; 
 public:
     int minMoves(vector<int>& nums, int limit) {
         int n = nums.size();
         int max_sum = 2 * limit;
         
-        for (int i = 0; i <= max_sum + 1; ++i) diff[i] = 0;
+        fill(diff, diff + max_sum + 2, 0);
 
         for (int i = 0; i < n / 2; ++i) {
             int a = nums[i];
@@ -38,3 +37,5 @@ public:
         return min_moves;
     }
 };
+
+int Solution::diff[200005];
