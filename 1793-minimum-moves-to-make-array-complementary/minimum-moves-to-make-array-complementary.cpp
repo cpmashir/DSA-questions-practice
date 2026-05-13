@@ -1,9 +1,3 @@
-static const int _ = []() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    return 0;
-}();
-
 class Solution {
     static int diff[200005]; 
 public:
