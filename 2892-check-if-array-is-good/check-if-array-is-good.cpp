@@ -1,6 +1,3 @@
-#include <vector>
-#include <algorithm>
-
 class Solution {
 public:
     bool isGood(std::vector<int>& nums) {
