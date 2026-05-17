@@ -1,25 +1,42 @@
 #include <vector>
+#include <queue>
 
 using namespace std;
 
 class Solution {
 public:
     bool canReach(vector<int>& arr, int start) {
-        // Out of bounds or already visited check
-        if (start < 0 || start >= arr.size() || arr[start] < 0) {
-            return false;
+        int n = arr.size();
+        queue<int> q;
+        vector<bool> visited(n, false);
+        
+        q.push(start);
+        visited[start] = true;
+        
+        while (!q.empty()) {
+            int curr = q.front();
+            q.pop();
+            
+            // If we found a target index with value 0
+            if (arr[curr] == 0) {
+                return true;
+            }
+            
+            // Option 1: Jump forward
+            int forward = curr + arr[curr];
+            if (forward < n && !visited[forward]) {
+                visited[forward] = true;
+                q.push(forward);
+            }
+            
+            // Option 2: Jump backward
+            int backward = curr - arr[curr];
+            if (backward >= 0 && !visited[backward]) {
+                visited[backward] = true;
+                q.push(backward);
+            }
         }
         
-        // Base case: destination reached
-        if (arr[start] == 0) {
-            return true;
-        }
-        
-        // Mark the current index as visited by making it negative
-        int jump = arr[start];
-        arr[start] = -arr[start];
-        
-        // Explore both directions
-        return canReach(arr, start + jump) || canReach(arr, start - jump);
+        return false;
     }
 };
