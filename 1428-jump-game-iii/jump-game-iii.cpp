@@ -2,7 +2,6 @@
 
 using namespace std;
 
-// Fast I/O optimization
 auto speedup = []() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -11,22 +10,36 @@ auto speedup = []() {
 
 class Solution {
 public:
+    bool canReach(vector<int>& arr, int n, int start) {
+        int q[50001]; 
+        int head = 0, tail = 0;
+        
+        q[tail++] = start;
+        
+        while (head < tail) {
+            int curr = q[head++];
+            int jump = arr[curr];
+            
+            if (jump == 0) return true;
+            if (jump < 0) continue;
+            
+            arr[curr] = -jump;
+            
+            int forward = curr + jump;
+            if (forward < n && arr[forward] >= 0) {
+                q[tail++] = forward;
+            }
+            
+            int backward = curr - jump;
+            if (backward >= 0 && arr[backward] >= 0) {
+                q[tail++] = backward;
+            }
+        }
+        
+        return false;
+    }
+
     bool canReach(vector<int>& arr, int start) {
-        // Base Case 1: Out of bounds or already visited
-        if (start < 0 || start >= arr.size() || arr[start] < 0) {
-            return false;
-        }
-        
-        // Base Case 2: Target found
-        if (arr[start] == 0) {
-            return true;
-        }
-        
-        // Grab the jump value and flip the sign to mark as visited
-        int jump = arr[start];
-        arr[start] = -jump; 
-        
-        // Short-circuit evaluation: if the forward path works, backward path won't even execute
-        return canReach(arr, start + jump) || canReach(arr, start - jump);
+        return canReach(arr, arr.size(), start);
     }
 };
