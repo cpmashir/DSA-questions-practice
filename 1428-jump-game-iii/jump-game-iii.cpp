@@ -1,42 +1,32 @@
 #include <vector>
-#include <queue>
 
 using namespace std;
+
+// Fast I/O optimization
+auto speedup = []() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    return 0;
+}();
 
 class Solution {
 public:
     bool canReach(vector<int>& arr, int start) {
-        int n = arr.size();
-        queue<int> q;
-        vector<bool> visited(n, false);
-        
-        q.push(start);
-        visited[start] = true;
-        
-        while (!q.empty()) {
-            int curr = q.front();
-            q.pop();
-            
-            // If we found a target index with value 0
-            if (arr[curr] == 0) {
-                return true;
-            }
-            
-            // Option 1: Jump forward
-            int forward = curr + arr[curr];
-            if (forward < n && !visited[forward]) {
-                visited[forward] = true;
-                q.push(forward);
-            }
-            
-            // Option 2: Jump backward
-            int backward = curr - arr[curr];
-            if (backward >= 0 && !visited[backward]) {
-                visited[backward] = true;
-                q.push(backward);
-            }
+        // Base Case 1: Out of bounds or already visited
+        if (start < 0 || start >= arr.size() || arr[start] < 0) {
+            return false;
         }
         
-        return false;
+        // Base Case 2: Target found
+        if (arr[start] == 0) {
+            return true;
+        }
+        
+        // Grab the jump value and flip the sign to mark as visited
+        int jump = arr[start];
+        arr[start] = -jump; 
+        
+        // Short-circuit evaluation: if the forward path works, backward path won't even execute
+        return canReach(arr, start + jump) || canReach(arr, start - jump);
     }
 };
