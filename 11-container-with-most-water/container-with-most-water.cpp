@@ -1,18 +1,18 @@
-// This static block forces the compiler to disable C/C++ I/O synchronization 
-// before the LeetCode main runner even initializes the solution class.
+#pragma GCC optimize("Os") // Optimize the binary specifically for memory size
+#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+
 auto speedup = []() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     return 0;
 }();
 
 class Solution {
 public:
-    int maxArea(vector<int>& height) {
+    int maxArea(std::vector<int>& height) {
         int max_water = 0;
         
-        // Use raw pointers to keep data strictly inside CPU registers 
-        // and eliminate stack frames.
+        // Use raw pointers to keep data entirely in CPU registers
         const int* left = height.data();
         const int* right = left + height.size() - 1;
         
