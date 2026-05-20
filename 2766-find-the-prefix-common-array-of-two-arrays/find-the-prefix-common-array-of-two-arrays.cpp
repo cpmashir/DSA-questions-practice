@@ -3,18 +3,20 @@ public:
     vector<int> findThePrefixCommonArray(vector<int>& A, vector<int>& B) {
         int n = A.size();
         vector<int> C(n);
-        vector<int> frequency(n + 1, 0);
+        long long seen = 0;
         int common = 0;
 
         for (int i = 0; i < n; ++i) {
-            frequency[A[i]]++;
-            if (frequency[A[i]] == 2) {
+            if ((seen >> A[i]) & 1) {
                 common++;
+            } else {
+                seen |= (1LL << A[i]);
             }
 
-            frequency[B[i]]++;
-            if (frequency[B[i]] == 2) {
+            if ((seen >> B[i]) & 1) {
                 common++;
+            } else {
+                seen |= (1LL << B[i]);
             }
 
             C[i] = common;
