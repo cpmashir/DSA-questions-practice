@@ -2,33 +2,32 @@ class Solution {
 public:
     int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
         unordered_set<int> prefixes;
-        
-        // Step 1: Store all possible prefixes from arr1
         for (int num : arr1) {
             while (num > 0) {
                 prefixes.insert(num);
-                num /= 10; // Removes the last digit to get the next prefix
+                num /= 10;
             }
         }
         
         int max_len = 0;
+        int p10 = 1; 
         
-        // Step 2: Check prefixes of numbers in arr2
         for (int num : arr2) {
-            while (num > 0) {
-                // Early optimization: if the current number's length is less than 
-                // or equal to our max_len, it can't possibly beat our record.
-                string str_num = to_string(num);
-                if (str_num.length() <= max_len) {
-                    break; 
-                }
-                
-                // If this prefix exists in arr1's prefix set
+            while (num >= p10) {
                 if (prefixes.count(num)) {
-                    max_len = max(max_len, (int)str_num.length());
-                    break; // Since we go from longest to shortest, the first match is the best for this number
+                    int len = 0;
+                    int temp = num;
+                    while (temp > 0) {
+                        len++;
+                        temp /= 10;
+                    }
+                    if (len > max_len) {
+                        max_len = len;
+                        p10 = 1;
+                        for (int i = 0; i < max_len; ++i) p10 *= 10;
+                    }
+                    break;
                 }
-                
                 num /= 10;
             }
         }
