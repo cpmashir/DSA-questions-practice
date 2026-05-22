@@ -1,13 +1,18 @@
 #include <vector>
+#include <iostream>
+
+// Global fast I/O block executes before main() to minimize driver overhead
+static const int fast_io = []() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    return 0;
+}();
 
 class Solution {
 public:
-    int search(std::vector<int>& nums, int target) {
-        std::ios_base::sync_with_stdio(false);
-        std::cin.tie(NULL);
-        
+    int search(const std::vector<int>& nums, int target) {
         int low = 0;
-        int high = nums.size() - 1;
+        int high = static_cast<int>(nums.size()) - 1;
         
         while (low <= high) {
             int mid = low + (high - low) / 2;
