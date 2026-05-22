@@ -1,13 +1,3 @@
-#include <vector>
-
-// Ultimate fast I/O using C-style stream untying
-static const auto __optimize_io__ = []() {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    std::cout.tie(nullptr);
-    return 0;
-}();
-
 class Solution {
 public:
     // Using simple int types and standard inline conditions to avoid stack frames
