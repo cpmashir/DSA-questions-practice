@@ -3,6 +3,9 @@
 class Solution {
 public:
     int search(std::vector<int>& nums, int target) {
+        std::ios_base::sync_with_stdio(false);
+        std::cin.tie(NULL);
+        
         int low = 0;
         int high = nums.size() - 1;
         
@@ -13,26 +16,21 @@ public:
                 return mid;
             }
             
-            // Check if the left half is sorted
             if (nums[low] <= nums[mid]) {
-                // Check if target lies within the sorted left half
                 if (target >= nums[low] && target < nums[mid]) {
-                    high = mid - 1; // Search left
+                    high = mid - 1;
                 } else {
-                    low = mid + 1;  // Search right
+                    low = mid + 1;
                 }
-            } 
-            // Otherwise, the right half must be sorted
-            else {
-                // Check if target lies within the sorted right half
+            } else {
                 if (target > nums[mid] && target <= nums[high]) {
-                    low = mid + 1;  // Search right
+                    low = mid + 1;
                 } else {
-                    high = mid - 1; // Search left
+                    high = mid - 1;
                 }
             }
         }
         
-        return -1; // Target not found
+        return -1;
     }
 };
