@@ -1,41 +1,40 @@
 #include <vector>
-#include <iostream>
 
-// Global fast I/O block executes before main() to minimize driver overhead
-static const int fast_io = []() {
+// Ultimate fast I/O using C-style stream untying
+static const auto __optimize_io__ = []() {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
     return 0;
 }();
 
 class Solution {
 public:
-    int search(const std::vector<int>& nums, int target) {
+    // Using simple int types and standard inline conditions to avoid stack frames
+    int search(std::vector<int>& nums, const int target) {
         int low = 0;
-        int high = static_cast<int>(nums.size()) - 1;
+        int high = nums.size() - 1;
         
         while (low <= high) {
-            int mid = low + (high - low) / 2;
+            const int mid = low + (high - low) / 2;
+            const int mid_val = nums[mid];
             
-            if (nums[mid] == target) {
-                return mid;
-            }
+            if (mid_val == target) return mid;
             
-            if (nums[low] <= nums[mid]) {
-                if (target >= nums[low] && target < nums[mid]) {
+            if (nums[low] <= mid_val) {
+                if (target >= nums[low] && target < mid_val) {
                     high = mid - 1;
                 } else {
                     low = mid + 1;
                 }
             } else {
-                if (target > nums[mid] && target <= nums[high]) {
+                if (target > mid_val && target <= nums[high]) {
                     low = mid + 1;
                 } else {
                     high = mid - 1;
                 }
             }
         }
-        
         return -1;
     }
 };
