@@ -10,28 +10,25 @@ public:
         int n = s.length();
         if (s[n - 1] == '1') return false;
 
-        vector<int> q(n);
-        int head = 0, tail = 0;
-        q[tail++] = 0;
-        
-        int far = 0;
+        int available_from = 0; 
+        s[0] = '2'; 
 
-        while (head < tail) {
-            int i = q[head++];
-            if (i == n - 1) return true;
+        for (int i = 0; i < n; ++i) {
+            if (s[i] != '2') continue;
 
-            int start = max(i + minJump, far + 1);
+            int start = max(i + minJump, available_from);
             int end = min(i + maxJump, n - 1);
 
             for (int j = start; j <= end; ++j) {
                 if (s[j] == '0') {
-                    if (j == n - 1) return true;
-                    q[tail++] = j;
+                    s[j] = '2';
                 }
             }
-            far = max(far, end);
+            available_from = max(available_from, end + 1);
+            
+            if (s[n - 1] == '2') return true;
         }
 
-        return false;
+        return s[n - 1] == '2';
     }
 };
