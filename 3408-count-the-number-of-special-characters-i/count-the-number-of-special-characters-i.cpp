@@ -4,7 +4,6 @@ public:
         vector<bool> lower(26, false);
         vector<bool> upper(26, false);
         
-        // Mark the presence of each character
         for (char c : word) {
             if (c >= 'a' && c <= 'z') {
                 lower[c - 'a'] = true;
@@ -13,7 +12,6 @@ public:
             }
         }
         
-        // Count how many pairs exist
         int specialCount = 0;
         for (int i = 0; i < 26; ++i) {
             if (lower[i] && upper[i]) {
