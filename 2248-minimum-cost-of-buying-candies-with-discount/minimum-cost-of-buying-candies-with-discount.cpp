@@ -1,17 +1,24 @@
 class Solution {
 public:
     int minimumCost(std::vector<int>& cost) {
-        std::sort(cost.begin(), cost.end(), std::greater<int>());
-        
-        int totalCost = 0;
-        
-        for (int i = 0; i < cost.size(); ++i) {
-            if ((i + 1) % 3 == 0) {
-                continue;
-            }
-            totalCost += cost[i];
+        int counts[101] = {0};
+        for (int c : cost) {
+            counts[c]++;
         }
-        
+
+        int totalCost = 0;
+        int candyCount = 0;
+
+        for (int price = 100; price >= 1; --price) {
+            while (counts[price] > 0) {
+                candyCount++;
+                if (candyCount % 3 != 0) {
+                    totalCost += price;
+                }
+                counts[price]--;
+            }
+        }
+
         return totalCost;
     }
 };
