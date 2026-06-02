@@ -14,25 +14,35 @@ public:
     int earliestFinishTime(vector<int>& landStartTime, vector<int>& landDuration, vector<int>& waterStartTime, vector<int>& waterDuration) {
         int n = landStartTime.size();
         int m = waterStartTime.size();
-        int minFinishTime = 2e9;
 
+        int minLandFinish = 2e9;
         for (int i = 0; i < n; ++i) {
-            int lStart = landStartTime[i];
-            int lDur = landDuration[i];
-            int lFinish = lStart + lDur;
-            
-            for (int j = 0; j < m; ++j) {
-                int wStart = waterStartTime[j];
-                int wDur = waterDuration[j];
-                
-                int f1 = max(lFinish, wStart) + wDur;
-                int f2 = max(wStart + wDur, lStart) + lDur;
-                
-                if (f1 < minFinishTime) minFinishTime = f1;
-                if (f2 < minFinishTime) minFinishTime = f2;
+            int finish = landStartTime[i] + landDuration[i];
+            if (finish < minLandFinish) {
+                minLandFinish = finish;
             }
         }
 
-        return minFinishTime;
+        int minWaterFinish = 2e9;
+        for (int j = 0; j < m; ++j) {
+            int finish = waterStartTime[j] + waterDuration[j];
+            if (finish < minWaterFinish) {
+                minWaterFinish = finish;
+            }
+        }
+
+        int ans1 = 2e9;
+        for (int j = 0; j < m; ++j) {
+            int f1 = max(minLandFinish, waterStartTime[j]) + waterDuration[j];
+            if (f1 < ans1) ans1 = f1;
+        }
+
+        int ans2 = 2e9;
+        for (int i = 0; i < n; ++i) {
+            int f2 = max(minWaterFinish, landStartTime[i]) + landDuration[i];
+            if (f2 < ans2) ans2 = f2;
+        }
+
+        return (ans1 < ans2) ? ans1 : ans2;
     }
 };
