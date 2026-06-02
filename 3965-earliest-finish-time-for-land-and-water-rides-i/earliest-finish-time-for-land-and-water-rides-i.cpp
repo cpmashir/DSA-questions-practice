@@ -1,14 +1,3 @@
-#include <vector>
-#include <algorithm>
-
-using namespace std;
-
-auto speedup = []() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    return 0;
-}();
-
 class Solution {
 public:
     int earliestFinishTime(vector<int>& landStartTime, vector<int>& landDuration, vector<int>& waterStartTime, vector<int>& waterDuration) {
