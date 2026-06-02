@@ -1,32 +1,35 @@
 #include <vector>
 #include <algorithm>
-#include <climits>
 
 using namespace std;
+
+auto speedup = []() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    return 0;
+}();
 
 class Solution {
 public:
     int earliestFinishTime(vector<int>& landStartTime, vector<int>& landDuration, vector<int>& waterStartTime, vector<int>& waterDuration) {
         int n = landStartTime.size();
         int m = waterStartTime.size();
-        int minFinishTime = INT_MAX;
+        int minFinishTime = 2e9;
 
-        // Iterate through every possible pair of land and water rides
         for (int i = 0; i < n; ++i) {
+            int lStart = landStartTime[i];
+            int lDur = landDuration[i];
+            int lFinish = lStart + lDur;
+            
             for (int j = 0; j < m; ++j) {
+                int wStart = waterStartTime[j];
+                int wDur = waterDuration[j];
                 
-                // Case 1: Land Ride i -> Water Ride j
-                int landFinish1 = landStartTime[i] + landDuration[i];
-                int waterStart1 = max(landFinish1, waterStartTime[j]);
-                int totalFinish1 = waterStart1 + waterDuration[j];
+                int f1 = max(lFinish, wStart) + wDur;
+                int f2 = max(wStart + wDur, lStart) + lDur;
                 
-                // Case 2: Water Ride j -> Land Ride i
-                int waterFinish2 = waterStartTime[j] + waterDuration[j];
-                int landStart2 = max(waterFinish2, landStartTime[i]);
-                int totalFinish2 = landStart2 + landDuration[i];
-                
-                // Keep track of the minimum finish time found so far
-                minFinishTime = min({minFinishTime, totalFinish1, totalFinish2});
+                if (f1 < minFinishTime) minFinishTime = f1;
+                if (f2 < minFinishTime) minFinishTime = f2;
             }
         }
 
