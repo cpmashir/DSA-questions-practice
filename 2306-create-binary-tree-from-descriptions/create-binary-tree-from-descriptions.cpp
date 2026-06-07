@@ -1,54 +1,53 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- * int val;
- * TreeNode *left;
- * TreeNode *right;
- * TreeNode() : val(0), left(nullptr), right(nullptr) {}
- * TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- * TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
 class Solution {
 public:
     TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
-        unordered_map<int, TreeNode*> nodeMap;
-        unordered_set<int> children;
+        // Fast I/O operations
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
 
-        // Step 1: Build the nodes and establish parent-child relationships
+        // Max node value is 100,000 based on constraints
+        const int MAX_VAL = 100001;
+        
+        // Direct-address table for tree node pointers
+        // Using a flat array eliminates hash-map overhead
+        TreeNode* nodeMap[MAX_VAL] = {nullptr};
+        
+        // Array to track if a node value has a parent
+        bool hasParent[MAX_VAL] = {false};
+
         for (const auto& desc : descriptions) {
-            int parentVal = desc[0];
-            int childVal = desc[1];
-            bool isLeft = desc[2] == 1;
+            int pVal = desc[0];
+            int cVal = desc[1];
+            int isLeft = desc[2];
 
-            // If parent doesn't exist, create it
-            if (nodeMap.find(parentVal) == nodeMap.end()) {
-                nodeMap[parentVal] = new TreeNode(parentVal);
+            // Allocate parent if it doesn't exist yet
+            if (!nodeMap[pVal]) {
+                nodeMap[pVal] = new TreeNode(pVal);
             }
-            // If child doesn't exist, create it
-            if (nodeMap.find(childVal) == nodeMap.end()) {
-                nodeMap[childVal] = new TreeNode(childVal);
+            // Allocate child if it doesn't exist yet
+            if (!nodeMap[cVal]) {
+                nodeMap[cVal] = new TreeNode(cVal);
             }
 
-            // Link parent and child
+            // Link them directly
             if (isLeft) {
-                nodeMap[parentVal]->left = nodeMap[childVal];
+                nodeMap[pVal]->left = nodeMap[cVal];
             } else {
-                nodeMap[parentVal]->right = nodeMap[childVal];
+                nodeMap[pVal]->right = nodeMap[cVal];
             }
 
-            // Mark this node as a child
-            children.insert(childVal);
+            // Mark this child as having a parent
+            hasParent[cVal] = true;
         }
 
-        // Step 2: Find the root (the node that is never a child)
+        // Find the root: look up the parent values present in descriptions
         for (const auto& desc : descriptions) {
-            int parentVal = desc[0];
-            if (children.find(parentVal) == children.end()) {
-                return nodeMap[parentVal];
+            int pVal = desc[0];
+            if (!hasParent[pVal]) {
+                return nodeMap[pVal];
             }
         }
 
-        return nullptr; // Fallback for an empty or invalid description input
+        return nullptr;
     }
 };
