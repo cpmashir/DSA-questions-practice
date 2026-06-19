@@ -4,7 +4,6 @@ public:
         int max_alt = 0;
         int current_alt = 0;
         
-        // Using a reference to avoid any iterator or indexing overhead
         for (const int& g : gain) {
             current_alt += g;
             if (current_alt > max_alt) {
