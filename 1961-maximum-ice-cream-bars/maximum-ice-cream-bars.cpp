@@ -1,14 +1,14 @@
 class Solution {
 public:
     int maxIceCream(std::vector<int>& costs, int coins) {
+        int freq[100001] = {0};
         int max_cost = 0;
-        for (int cost : costs) {
-            max_cost = std::max(max_cost, cost);
-        }
 
-        std::vector<int> freq(max_cost + 1, 0);
         for (int cost : costs) {
             freq[cost]++;
+            if (cost > max_cost) {
+                max_cost = cost;
+            }
         }
 
         int ice_cream_count = 0;
@@ -22,8 +22,7 @@ public:
                 coins -= total_cost_for_all;
                 ice_cream_count += freq[price];
             } else {
-                int count_to_buy = coins / price;
-                ice_cream_count += count_to_buy;
+                ice_cream_count += coins / price;
                 break;
             }
         }
