@@ -1,6 +1,9 @@
 class Solution {
 public:
     bool canJump(vector<int>& nums) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        
         int maxReachable = 0;
         int n = nums.size();
         
