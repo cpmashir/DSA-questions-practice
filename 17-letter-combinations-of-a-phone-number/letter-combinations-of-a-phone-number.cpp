@@ -1,46 +1,45 @@
 #include <vector>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
 class Solution {
 private:
-    // Global keypad mapping where index matches the digit character value
     const vector<string> phoneMap = {
-        "",     "",     "abc",  "def",  // 0, 1, 2, 3
-        "ghi",  "jkl",  "mno",          // 4, 5, 6
-        "pqrs", "tuv",  "wxyz"          // 7, 8, 9
+        "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
     };
 
     void backtrack(const string& digits, int index, string& current, vector<string>& result) {
-        // Base case: If the path length matches the input length, we found a valid combination
         if (index == digits.length()) {
             result.push_back(current);
             return;
         }
 
-        // Convert current char digit to its integer map index
-        string letters = phoneMap[digits[index] - '0'];
-        
+        const string& letters = phoneMap[digits[index] - '0'];
         for (char letter : letters) {
-            current.push_back(letter);                     // Choose
-            backtrack(digits, index + 1, current, result); // Explore
-            current.pop_back();                            // Undo Choose (Backtrack)
+            current.push_back(letter);
+            backtrack(digits, index + 1, current, result);
+            current.pop_back();
         }
     }
 
 public:
     vector<string> letterCombinations(string digits) {
-        vector<string> result;
+        if (digits.empty()) return {};
         
-        // Edge case: LeetCode constraints allow empty string input
-        if (digits.empty()) {
-            return result;
+        int totalCombinations = 1;
+        for (char d : digits) {
+            totalCombinations *= (d == '7' || d == '9') ? 4 : 3;
         }
         
-        string current = "";
-        backtrack(digits, 0, current, result);
+        vector<string> result;
+        result.reserve(totalCombinations);
         
-        return result; // Ensures all execution paths return a value
+        string current = "";
+        current.reserve(digits.length());
+        
+        backtrack(digits, 0, current, result);
+        return result;
     }
 };
