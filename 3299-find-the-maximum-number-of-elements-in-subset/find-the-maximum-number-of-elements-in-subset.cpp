@@ -1,5 +1,4 @@
 #include <vector>
-#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
@@ -7,38 +6,51 @@ using namespace std;
 class Solution {
 public:
     int maximumLength(vector<int>& nums) {
-        unordered_map<long long, int> counts;
-        for (int num : nums) {
-            counts[num]++;
-        }
-
+        sort(nums.begin(), nums.end());
+        
+        int n = nums.size();
         int max_len = 1;
-
-        if (counts.count(1)) {
-            int count_ones = counts[1];
-            max_len = max(max_len, count_ones - (count_ones % 2 == 0));
+        
+        int count_ones = 0;
+        while (count_ones < n && nums[count_ones] == 1) {
+            count_ones++;
         }
-
-        for (auto& [val, count] : counts) {
-            if (val == 1) continue;
-
-            long long x = val;
+        if (count_ones > 0) {
+            max_len = count_ones - (count_ones % 2 == 0);
+        }
+        
+        for (int i = count_ones; i < n; ) {
+            int j = i;
+            while (j < n && nums[j] == nums[i]) {
+                j++;
+            }
+            int freq = j - i;
+            
+            long long x = nums[i];
+            i = j; 
+            
             int current_len = 0;
-
-            while (counts.count(x) && counts[x] >= 2) {
-                current_len += 2;
-                x = x * x;
+            while (true) {
+                auto it = lower_bound(nums.begin(), nums.end(), x);
+                if (it == nums.end() || *it != x) {
+                    current_len -= 1;
+                    break;
+                }
+                
+                auto it2 = upper_bound(it, nums.end(), x);
+                int current_freq = distance(it, it2);
+                
+                if (current_freq >= 2) {
+                    current_len += 2;
+                    x = x * x;
+                } else {
+                    current_len += 1;
+                    break;
+                }
             }
-
-            if (counts.count(x)) {
-                current_len += 1;
-            } else {
-                current_len -= 1;
-            }
-
             max_len = max(max_len, current_len);
         }
-
+        
         return max_len;
     }
 };
