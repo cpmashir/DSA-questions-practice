@@ -11,7 +11,6 @@ public:
             }
         }
         
-        // This is the line your code is currently missing or has misplaced:
-        return arr.back(); 
+        return arr.back();
     }
 };
