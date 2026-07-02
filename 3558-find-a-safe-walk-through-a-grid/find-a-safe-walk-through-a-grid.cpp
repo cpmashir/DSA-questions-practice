@@ -2,35 +2,34 @@ class Solution {
 public:
     bool findSafeWalk(vector<vector<int>>& grid, int health) {
         int m = grid.size(), n = grid[0].size();
-        vector<vector<char>> dist(m, vector<char>(n, 127));
-        deque<pair<int, int>> dq;
 
-        dist[0][0] = grid[0][0];
-        dq.emplace_front(0, 0);
+        vector<vector<char>> best(m, vector<char>(n, -1));
+        queue<pair<int, int>> q;
 
-        static const int d[5] = {-1, 0, 1, 0, -1};
+        int start = health - grid[0][0];
+        if (start <= 0) return false;
 
-        while (!dq.empty()) {
-            auto [x, y] = dq.front();
-            dq.pop_front();
+        best[0][0] = start;
+        q.push({0, 0});
 
-            char cur = dist[x][y];
+        int d[5] = {-1, 0, 1, 0, -1};
+
+        while (!q.empty()) {
+            auto [x, y] = q.front();
+            q.pop();
+
             if (x == m - 1 && y == n - 1)
-                return cur < health;
+                return true;
 
-            for (int k = 0; k < 4; ++k) {
+            for (int k = 0; k < 4; k++) {
                 int nx = x + d[k], ny = y + d[k + 1];
-                if ((unsigned)nx >= (unsigned)m || (unsigned)ny >= (unsigned)n)
-                    continue;
+                if ((unsigned)nx >= m || (unsigned)ny >= n) continue;
 
-                char nd = cur + grid[nx][ny];
-                if (nd >= dist[nx][ny]) continue;
+                char rem = best[x][y] - grid[nx][ny];
+                if (rem <= 0 || rem <= best[nx][ny]) continue;
 
-                dist[nx][ny] = nd;
-                if (grid[nx][ny])
-                    dq.emplace_back(nx, ny);
-                else
-                    dq.emplace_front(nx, ny);
+                best[nx][ny] = rem;
+                q.push({nx, ny});
             }
         }
 
