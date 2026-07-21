@@ -1,30 +1,32 @@
 class Solution {
 public:
     int maxActiveSectionsAfterTrade(string s) {
-        int initialOnes = 0;
-        for (char c : s)
-            if (c == '1') initialOnes++;
+        int ones = 0;
+        for (char c : s) ones += (c == '1');
 
         string t = "1" + s + "1";
+        int n = t.size();
 
-        vector<char> ch;
-        vector<int> len;
+        int ans = ones;
 
-        for (char c : t) {
-            if (ch.empty() || ch.back() != c) {
-                ch.push_back(c);
-                len.push_back(1);
-            } else {
-                len.back()++;
+        char c1 = 0, c2 = 0, c3 = 0;
+        int l1 = 0, l2 = 0, l3 = 0;
+
+        int i = 0;
+        while (i < n) {
+            char cur = t[i];
+            int cnt = 0;
+            while (i < n && t[i] == cur) {
+                cnt++;
+                i++;
             }
-        }
 
-        int ans = initialOnes;
+            c1 = c2; l1 = l2;
+            c2 = c3; l2 = l3;
+            c3 = cur; l3 = cnt;
 
-        for (int i = 1; i + 1 < (int)ch.size(); i++) {
-            if (ch[i] == '1' && ch[i - 1] == '0' && ch[i + 1] == '0') {
-                ans = max(ans, initialOnes + len[i - 1] + len[i + 1]);
-            }
+            if (c1 == '0' && c2 == '1' && c3 == '0')
+                ans = max(ans, ones + l1 + l3);
         }
 
         return ans;
