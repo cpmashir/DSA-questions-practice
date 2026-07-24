@@ -3,24 +3,23 @@ public:
     int uniqueXorTriplets(vector<int>& nums) {
         const int MAXX = 2048;
 
-        vector<vector<char>> dp(4, vector<char>(MAXX, 0));
-        dp[0][0] = 1;
+        bool dp[4][MAXX] = {};
+        dp[0][0] = true;
 
         for (int v : nums) {
-            auto ndp = dp; // choosing this index 0 times
-
-            for (int cnt = 0; cnt <= 3; cnt++) {
+            for (int cnt = 2; cnt >= 0; cnt--) {
                 for (int x = 0; x < MAXX; x++) {
                     if (!dp[cnt][x]) continue;
 
-                    for (int take = 1; cnt + take <= 3; take++) {
-                        int nx = x ^ ((take & 1) ? v : 0);
-                        ndp[cnt + take][nx] = 1;
-                    }
+                    dp[cnt + 1][x ^ v] = true;
+
+                    if (cnt + 2 <= 3)
+                        dp[cnt + 2][x] = true;
+
+                    if (cnt + 3 <= 3)
+                        dp[cnt + 3][x ^ v] = true;
                 }
             }
-
-            dp.swap(ndp);
         }
 
         int ans = 0;
