@@ -21,7 +21,7 @@ public:
                 else if (sum > target)
                     right--;
                 else
-                    return sum; // Exact match
+                    return sum; 
             }
         }
 
