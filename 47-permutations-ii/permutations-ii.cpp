@@ -9,11 +9,11 @@ public:
         }
 
         for (int i = 0; i < nums.size(); i++) {
-            // Already used
+            
             if (used[i])
                 continue;
 
-            // Skip duplicate choices at the same level
+            
             if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])
                 continue;
 
