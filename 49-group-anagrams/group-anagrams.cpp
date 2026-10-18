@@ -1,31 +1,32 @@
 class Solution {
+    struct Hash {
+        size_t operator()(const array<int, 26>& a) const {
+            size_t h = 0;
+            for (int x : a)
+                h = h * 31 + x;
+            return h;
+        }
+    };
+
 public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string>> mp;
+        unordered_map<array<int, 26>, vector<string>, Hash> mp;
         mp.reserve(strs.size());
 
-        for (const string& s : strs) {
-            int cnt[26] = {};
+        for (auto& s : strs) {
+            array<int, 26> cnt{};
 
             for (char c : s)
                 cnt[c - 'a']++;
 
-            string key;
-            key.reserve(52);
-
-            for (int x : cnt) {
-                key += '#';
-                key += to_string(x);
-            }
-
-            mp[key].push_back(s);
+            mp[cnt].push_back(move(s));
         }
 
         vector<vector<string>> ans;
         ans.reserve(mp.size());
 
-        for (auto& [key, group] : mp)
-            ans.push_back(move(group));
+        for (auto& entry : mp)
+            ans.push_back(move(entry.second));
 
         return ans;
     }
