@@ -2,41 +2,20 @@
 class Solution {
 public:
     int maxLength(vector<int>& nums) {
-        int n = nums.size();
-        int ans = 1;
-        int primes[4] = {2, 3, 5, 7};
+        int n = nums.size(), ans = 1;
 
         for (int i = 0; i < n; i++) {
-            int sum[4] = {0};
-            int mn[4] = {100, 100, 100, 100};
-            int mx[4] = {0};
+            long long prod = 1;
+            int g = 0, l = 1;
 
             for (int j = i; j < n; j++) {
-                int x = nums[j];
+                if (prod > 1e18 / nums[j]) break;
+                prod *= nums[j];
 
-                for (int k = 0; k < 4; k++) {
-                    int cnt = 0;
+                g = gcd(g, nums[j]);
+                l = lcm(l, nums[j]);
 
-                    while (x % primes[k] == 0) {
-                        cnt++;
-                        x /= primes[k];
-                    }
-
-                    sum[k] += cnt;
-                    mn[k] = min(mn[k], cnt);
-                    mx[k] = max(mx[k], cnt);
-                }
-
-                bool valid = true;
-
-                for (int k = 0; k < 4; k++) {
-                    if (sum[k] != mn[k] + mx[k]) {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                if (valid)
+                if (prod == 1LL * g * l)
                     ans = max(ans, j - i + 1);
             }
         }
