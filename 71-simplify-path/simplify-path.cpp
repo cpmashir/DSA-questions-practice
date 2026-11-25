@@ -1,28 +1,21 @@
 class Solution {
 public:
     string simplifyPath(string path) {
-        stack<string> st;
-        stringstream ss(path);
+        vector<string> v;
         string dir;
+        stringstream ss(path);
 
         while (getline(ss, dir, '/')) {
-            if (dir.empty() || dir == ".")
-                continue;
-
+            if (dir == "" || dir == ".") continue;
             if (dir == "..") {
-                if (!st.empty())
-                    st.pop();
-            }
-            else {
-                st.push(dir);
+                if (!v.empty()) v.pop_back();
+            } else {
+                v.push_back(dir);
             }
         }
 
-        string ans = "";
-        while (!st.empty()) {
-            ans = "/" + st.top() + ans;
-            st.pop();
-        }
+        string ans;
+        for (auto &s : v) ans += "/" + s;
 
         return ans.empty() ? "/" : ans;
     }
