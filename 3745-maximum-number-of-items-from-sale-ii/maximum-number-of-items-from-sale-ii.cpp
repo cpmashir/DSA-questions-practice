@@ -3,7 +3,6 @@ public:
     int maximumSaleItems(vector<vector<int>>& items, int budget) {
         int n = items.size();
         vector<int> freq(n + 1), cnt(n + 1);
-
         long long mn = LLONG_MAX;
 
         for (auto &x : items) {
@@ -15,19 +14,18 @@ public:
             for (int j = i; j <= n; j += i)
                 cnt[i] += freq[j];
 
-        vector<pair<int, int>> v;
+        vector<pair<long long, long long>> v;
 
-        for (auto &x : items) {
+        for (auto &x : items)
             if (cnt[x[0]] > 1 && x[1] < 2 * mn)
                 v.push_back({x[1], cnt[x[0]] - 1});
-        }
 
         sort(v.begin(), v.end());
 
         long long ans = 0;
 
         for (auto &[p, c] : v) {
-            long long take = min((long long)c, (long long)budget / p);
+            long long take = min(c, (long long)budget / p);
             ans += 2 * take;
             budget -= take * p;
         }
